@@ -41,7 +41,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public long insertArticle(
-            String pageId,
+            int pageId,
             String author,
             String title,
             String description,
@@ -100,7 +100,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // prepare note object
         Article article = new Article(
                 cursor.getInt(cursor.getColumnIndex(Article.COLUMN_ID)),
-                cursor.getString(cursor.getColumnIndex(Article.COLUMN_PAGE_ID)),
+                cursor.getInt(cursor.getColumnIndex(Article.COLUMN_PAGE_ID)),
                 cursor.getString(cursor.getColumnIndex(Article.COLUMN_AUTHOR)),
                 cursor.getString(cursor.getColumnIndex(Article.COLUMN_TITLE)),
                 cursor.getString(cursor.getColumnIndex(Article.COLUMN_DESCRIPTION)),
@@ -113,5 +113,40 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cursor.close();
 
         return article;
+    }
+
+    public List<Article> getArticlesByPage(int pageId) {
+        List<Article> articles = new ArrayList<>();
+
+        // Select All Query
+        String selectQuery = "SELECT  * FROM " + Article.TABLE_NAME + " ORDER BY " +
+                Article.COLUMN_PUBLISHED_AT + " DESC WHERE pageId = " + pageId;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+                Article article = new Article();
+                article.setId(cursor.getInt(cursor.getColumnIndex(Note.COLUMN_ID)));
+                article.setPageId(cursor.getInt(cursor.getColumnIndex(Note.COLUMN_PAGE_ID)));
+                article.setAuthor(cursor.getString(cursor.getColumnIndex(Note.COLUMN_AUTHOR)));
+                article.setTitle(cursor.getString(cursor.getColumnIndex(Note.COLUMN_TITLE)));
+                article.setDescription(cursor.getString(cursor.getColumnIndex(Note.COLUMN_DESCRIPTION)));
+                article.setUrl(cursor.getString(cursor.getColumnIndex(Note.COLUMN_URL)));
+                article.setUrlToImage(cursor.getString(cursor.getColumnIndex(Note.COLUMN_URL_TO_IMAGE)));
+                article.setContent(cursor.getString(cursor.getColumnIndex(Note.COLUMN_CONTENT)));
+                article.setPublishedAt(cursor.getString(cursor.getColumnIndex(Note.COLUMN_PUBLISHED_AT)));
+
+                articles.add(article);
+            } while (cursor.moveToNext());
+        }
+
+        // close db connection
+        db.close();
+
+        // return articles list
+        return articles;
     }
 }
