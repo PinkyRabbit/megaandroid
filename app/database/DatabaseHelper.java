@@ -149,4 +149,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // return articles list
         return articles;
     }
+
+    public boolean hasArticleWithTitile(String title) {
+        boolean exist = false;
+
+        // Select All Query
+        String selectQuery = "SELECT  * FROM " + Article.TABLE_NAME + " WHERE title = " + title;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            exist = true;
+        }
+
+        // close db connection
+        db.close();
+
+        // return exist
+        return exist;
+    }
 }
