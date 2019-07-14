@@ -75,5 +75,43 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return id;
     }
 
+    public Article getArticle(long id) {
+        // get readable database as we are not inserting anything
+        SQLiteDatabase db = this.getReadableDatabase();
 
+        Cursor cursor = db.query(Article.TABLE_NAME,
+                new String[]{
+                        Article.COLUMN_ID,
+                        Article.COLUMN_PAGE_ID,
+                        Article.COLUMN_AUTHOR,
+                        Article.COLUMN_TITLE,
+                        Article.COLUMN_DESCRIPTION,
+                        Article.COLUMN_URL,
+                        Article.COLUMN_URL_TO_IMAGE,
+                        Article.COLUMN_CONTENT,
+                        Article.COLUMN_PUBLISHED_AT
+                },
+                Article.COLUMN_ID + "=?",
+                new String[]{String.valueOf(id)}, null, null, null, null, null, null, null, null, null);
+
+        if (cursor != null)
+            cursor.moveToFirst();
+
+        // prepare note object
+        Article article = new Article(
+                cursor.getInt(cursor.getColumnIndex(Article.COLUMN_ID)),
+                cursor.getString(cursor.getColumnIndex(Article.COLUMN_PAGE_ID)),
+                cursor.getString(cursor.getColumnIndex(Article.COLUMN_AUTHOR)),
+                cursor.getString(cursor.getColumnIndex(Article.COLUMN_TITLE)),
+                cursor.getString(cursor.getColumnIndex(Article.COLUMN_DESCRIPTION)),
+                cursor.getString(cursor.getColumnIndex(Article.COLUMN_URL)),
+                cursor.getString(cursor.getColumnIndex(Article.COLUMN_URL_TO_IMAGE)),
+                cursor.getString(cursor.getColumnIndex(Article.COLUMN_CONTENT)),
+                cursor.getString(cursor.getColumnIndex(Article.COLUMN_PUBLISHED_AT)));
+
+        // close the db connection
+        cursor.close();
+
+        return article;
+    }
 }
