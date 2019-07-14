@@ -12,7 +12,7 @@ public class Note {
     public static final String COLUMN_PUBLISHED_AT = "publishedAt";
 
     private int id;
-    private String pageId;
+    private int pageId;
     private String author;
     private String title;
     private String description;
@@ -40,7 +40,7 @@ public class Note {
 
     public Article(
             int id,
-            String pageId,
+            int pageId,
             String author,
             String title,
             String description,
@@ -72,7 +72,7 @@ public class Note {
         return pageId;
     }
 
-    public void setPageId(String pageId) {
+    public void setPageId(int pageId) {
         this.pageId = pageId;
     }
 
